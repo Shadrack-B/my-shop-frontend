@@ -1,0 +1,29 @@
+.product-image {
+    width: 70%;
+}
+
+.product-image-container {
+    width: 50%;
+}
+
+.product {
+    display: flex;
+    align-items: center;
+}
+
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between;
+}
