@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Product.css";
 import Card from "react-bootstrap/Card";
 import { useParams } from "react-router-dom";
-import Button from "react-bootstrap/Button";
+import Button from "../components/Button";
 import api from "../axios";
 
 const Product = () => {
@@ -60,7 +60,7 @@ const Product = () => {
                         <Card.Subtitle>{product.price}</Card.Subtitle>
                     </Card.Subtitle>
                     <div>
-                        <Button>Add to Cart</Button>
+                        <Button productId={product._id} />
                     </div>
                 </div>
             </div>

@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import CardGroup from "react-bootstrap/CardGroup";
 import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 import api from "../axios";
+import AppContext from "../contexts/appContext";
 
 const Home = () => {
     const [products, setProducts] = useState([]);
+    const { category } = useContext(AppContext);
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await api.get("/products");
+                const response =
+                    category !== ""
+                        ? await api.get(`/products/${category}`)
+                        : await api.get(`/products/`);
                 if (response && response.data) {
                     setProducts(response.data);
                 }
@@ -21,7 +26,7 @@ const Home = () => {
         };
 
         fetchProducts();
-    }, []);
+    }, [category]);
     return (
         <Container style={{ margin: "1em 0" }}>
             <CardGroup style={{ gap: "1em" }}>
@@ -64,12 +69,6 @@ const Home = () => {
                                     : product.title}
                             </Card.Title>
                             <Card.Subtitle>${product.price}</Card.Subtitle>
-                            <Button
-                                style={{ justifySelf: "flex-end" }}
-                                variant="primary"
-                            >
-                                Add to Cart
-                            </Button>
                         </Card.Body>
                     </Card>
                 ))}
