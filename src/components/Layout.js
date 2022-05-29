@@ -1,83 +1,57 @@
-import React, { useEffect, useState, useContext } from "react";
-import Button from "react-bootstrap/Button";
-import Navbar from "react-bootstrap/Navbar";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import api from "../axios";
+import React, { useContext } from "react";
 import AppContext from "../contexts/appContext";
+import { TopNav, SideNav } from "./Navigations/Navigation";
+import styled from "styled-components";
+import HumbergerMenu from "./HumbergerMenu";
+import useWindowsDimensions from "../hooks/useWindowsDimensions";
+import StatusInfo from "./StatusInfo";
 
-const TopNav = () => (
-    <Navbar bg="light">
-        <Container>
-            <Navbar.Brand href="#home">MY SHOP</Navbar.Brand>
-        </Container>
-    </Navbar>
-);
+const StyledLayout = styled.div`
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 4rem auto;
+    position: relative;
+    & .main {
+        padding: 1em 5% 1em 1em;
+        position: relative;
+        grid-column: 2/-1;
+        @media (max-width: 954px) {
+            grid-column: 1/-1;
+        }
+    }
+    & .modal-container {
+        background-color: rgba(0, 0, 0, 0.3);
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+    }
+    & .show-modal {
+        width: 60%;
+        display: flex;
+    }
+`;
 
-const Sidebar = () => {
-    const [categories, setCategories] = useState([]);
-    const { setCategory } = useContext(AppContext);
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const cats = [];
-                const response = await api.get("/categories");
-                if (response && response.data) {
-                    response.data.map((product) => {
-                        cats.push(product.category);
-                    });
-                    const categories = [...new Set(cats)];
-                    setCategories(categories);
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        fetchCategories();
-    }, []);
-    return (
-        <Nav defaultActiveKey="/home" className="flex-column">
-            <Button
-                variant="link"
-                onClick={() => {
-                    setCategory("");
-                }}
-            >
-                All
-            </Button>
-            {categories.map((category) => (
-                <Button
-                    variant="link"
-                    onClick={() => {
-                        setCategory(category);
-                    }}
-                    key={category}
-                >
-                    {category}
-                </Button>
-            ))}
-        </Nav>
-    );
-};
+const SecondaryNav = styled.div`
+    padding: 1em;
+`;
 
 const Layout = ({ children }) => {
+    const { width } = useWindowsDimensions();
+    const { statusInfo } = useContext(AppContext);
     return (
-        <div>
+        <StyledLayout>
             <TopNav />
-            <Container>
-                <Row>
-                    <Col lg={3}>
-                        <Sidebar />
-                    </Col>
-                    <Col>
-                        <div className="main">{children}</div>
-                    </Col>
-                </Row>
-            </Container>
-        </div>
+
+            <div className="main">
+                {statusInfo.show ? <StatusInfo /> : null}
+                <SecondaryNav>
+                    {width <= 945 ? <HumbergerMenu /> : null}
+                </SecondaryNav>
+                {children}
+            </div>
+            <SideNav />
+        </StyledLayout>
     );
 };
 
